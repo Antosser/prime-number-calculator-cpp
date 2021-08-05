@@ -3,8 +3,12 @@
 #include <string>
 #include <fstream>
 #include <string>
+#include <cmath>
+#include <thread>
 //#include <thread>
 //#include <Windows.h>
+
+void trd(std::vector<int>& primes);
 
 int main(int argc, char** argv) {
 	int n;
@@ -35,12 +39,14 @@ int main(int argc, char** argv) {
 	std::ofstream file(ofilename);
 
 	std::cout << "Calculating...\n";
+	std::thread t1(trd, std::ref(primes));
 	for (; primes.size() < n; i++) {
+		int root = sqrt(i) + 1;
 		for (int ci : primes) {
-			if (i % 10000 == 0)
-				std::cout << primes.size() << std::endl;
 			if (i % ci == 0)
 				goto brk;
+			if (ci > root)
+				break;
 		}
 		primes.push_back(i);
 		file << i << std::endl;
@@ -49,4 +55,11 @@ int main(int argc, char** argv) {
 	file.close();
 	std::cout << "Done!\n";
 	system("pause");
+}
+
+void trd(std::vector<int>& primes) {
+	while (true) {
+		std::cout << primes.size() << std::endl;
+		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+	}
 }
