@@ -5,8 +5,6 @@
 #include <string>
 #include <cmath>
 #include <thread>
-//#include <thread>
-//#include <Windows.h>
 
 void trd(std::vector<int>& primes);
 
