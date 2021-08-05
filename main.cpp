@@ -6,22 +6,23 @@
 #include <cmath>
 #include <thread>
 
-void trd(std::vector<int>& primes);
+void trd(std::vector<int>& primes, bool& runthread);
+inline bool fileExists(const std::string& name);
 
 int main(int argc, char** argv) {
 	int n;
 	std::cout << "Numbers: ";
 	std::cin >> n;
 	std::string ifilename;
-	std::cout << "Input: ";
+	std::cout << "File: ";
 	std::cin >> ifilename;
-	std::string ofilename;
-	std::cout << "Output: ";
-	std::cin >> ofilename;
+	//std::string ofilename;
+	//std::cout << "Output: ";
+	//std::cin >> ofilename;
 
 	unsigned long long i = 2;
 	std::vector<int> primes = {};
-	if (ifilename != "0") {
+	if (fileExists(ifilename)) {
 		std::cout << "Restoring vector...\n";
 		std::ifstream ifile(ifilename);
 		if (ifile.is_open()) {
@@ -34,10 +35,11 @@ int main(int argc, char** argv) {
 		}
 		else std::cout << "Unable to open file";
 	}
-	std::ofstream file(ofilename);
+	std::ofstream file(ifilename, std::ios_base::app);
 
 	std::cout << "Calculating...\n";
-	std::thread t1(trd, std::ref(primes));
+	bool runthread = true;
+	std::thread t1(trd, std::ref(primes), std::ref(runthread));
 	for (; primes.size() < n; i++) {
 		int root = sqrt(i) + 1;
 		for (int ci : primes) {
@@ -52,12 +54,18 @@ int main(int argc, char** argv) {
 	}
 	file.close();
 	std::cout << "Done!\n";
+	runthread = false;
 	system("pause");
 }
 
-void trd(std::vector<int>& primes) {
-	while (true) {
+void trd(std::vector<int>& primes, bool& runthread) {
+	while (runthread) {
 		std::cout << primes.size() << std::endl;
 		std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	}
+}
+
+inline bool fileExists(const std::string& name) {
+	struct stat buffer;
+	return (stat(name.c_str(), &buffer) == 0);
 }
