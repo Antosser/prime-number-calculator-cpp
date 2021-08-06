@@ -9,7 +9,6 @@
 
 void trd(std::vector<int>& primes, bool& runthread);
 inline bool fileExists(const std::string& name);
-void write_file(int n, std::ofstream& file);
 
 int main(int argc, char** argv) {
 	long long int n;
@@ -18,9 +17,6 @@ int main(int argc, char** argv) {
 	std::string ifilename;
 	std::cout << "File: ";
 	std::cin >> ifilename;
-	//std::string ofilename;
-	//std::cout << "Output: ";
-	//std::cin >> ofilename;
 
 	unsigned long long i = 2;
 	std::vector<int> primes = {};
