@@ -5,12 +5,14 @@
 #include <string>
 #include <cmath>
 #include <thread>
+#include <Windows.h>
 
 void trd(std::vector<int>& primes, bool& runthread);
 inline bool fileExists(const std::string& name);
+void write_file(int n, std::ofstream& file);
 
 int main(int argc, char** argv) {
-	int n;
+	long long int n;
 	std::cout << "Numbers: ";
 	std::cin >> n;
 	std::string ifilename;
@@ -35,7 +37,6 @@ int main(int argc, char** argv) {
 		}
 		else std::cout << "Unable to open file";
 	}
-	std::ofstream file(ifilename, std::ios_base::app);
 
 	std::cout << "Calculating...\n";
 	bool runthread = true;
@@ -49,13 +50,20 @@ int main(int argc, char** argv) {
 				break;
 		}
 		primes.push_back(i);
-		file << i << std::endl;
-	brk:;
+		brk:;
+		if (GetKeyState(0x1B) & 0x8000)
+			goto exit;
 	}
+	exit:;
+	runthread = false;
+	std::cout << "Writing...\n";
+	std::ofstream file(ifilename);
+	std::string data;
+	for (auto el : primes)
+		data += std::to_string(el) + '\n';
+	file.write(data.data(), data.size());
 	file.close();
 	std::cout << "Done!\n";
-	runthread = false;
-	system("pause");
 }
 
 void trd(std::vector<int>& primes, bool& runthread) {
