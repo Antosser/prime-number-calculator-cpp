@@ -48,17 +48,30 @@ int main(int argc, char** argv) {
 		primes.push_back(i);
 		brk:;
 		if (GetKeyState(0x1B) & 0x8000 && GetConsoleWindow() == GetForegroundWindow())
-			goto exit;
+			break;
 	}
-	exit:;
 	runthread = false;
 	std::cout << "Writing...\n";
-	std::ofstream file(ifilename);
-	std::string data;
-	for (auto el : primes)
-		data += std::to_string(el) + '\n';
-	file.write(data.data(), data.size());
-	file.close();
+	{
+		std::ofstream file(ifilename);
+		std::string data;
+		int count = 0;
+		for (long long int i = 0; i < primes.size(); i++) {
+			data += std::to_string(primes[i]) + '\n';
+			if (count > 2000000) {
+				file.write(data.data(), data.size());
+				count = 0;
+				data.erase();
+			}
+			count++;
+		}
+		file.write(data.data(), data.size());
+		file.close();
+	}
+	//
+	//for (auto el : primes)
+	//	data += std::to_string(el) + '\n';
+	//
 	std::cout << "Done!\n";
 }
 
