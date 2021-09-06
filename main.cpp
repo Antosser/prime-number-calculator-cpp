@@ -8,7 +8,9 @@
 #include <Windows.h>
 
 void trd(std::vector<int>& primes, bool& runthread);
-inline bool fileExists(const std::string& name);
+bool fileExists(const std::string& name);
+int floorSqrt(int x);
+unsigned long long isqrt(unsigned long a);
 
 int main(int argc, char** argv) {
 	long long int n;
@@ -25,7 +27,13 @@ int main(int argc, char** argv) {
 		std::ifstream ifile(ifilename);
 		if (ifile.is_open()) {
 			std::string line;
+			long long j = 0;
+			long long total = 0;
 			while (std::getline(ifile, line)) {
+				++j;
+				total += line.length() + 1;
+				if (!(j & 0xfffff))
+					std::cout << total / 0x100000 << "mb\n";
 				primes.push_back(std::stoi(line));
 			}
 			i = primes[primes.size() - 1];
@@ -38,7 +46,15 @@ int main(int argc, char** argv) {
 	bool runthread = true;
 	std::thread t1(trd, std::ref(primes), std::ref(runthread));
 	for (; primes.size() < n; i++) {
-		int root = sqrt(i) + 1;
+		//if (i & 0x100000)
+		//	primes.(0x100000);
+		uint16_t root = 0;
+		for (int32_t j = 15; j >= 0; j--) {
+			uint16_t temp = root | (1 << j);
+			if (temp * temp <= i) {
+				root = temp;
+			}
+		}
 		for (int ci : primes) {
 			if (i % ci == 0)
 				goto brk;
@@ -58,7 +74,8 @@ int main(int argc, char** argv) {
 		int count = 0;
 		for (long long int i = 0; i < primes.size(); i++) {
 			data += std::to_string(primes[i]) + '\n';
-			if (count > 2000000) {
+			if (count & 0x1000000) {
+				std::cout << float(i) / 0x100000 << "m\n";
 				file.write(data.data(), data.size());
 				count = 0;
 				data.erase();
@@ -76,13 +93,36 @@ int main(int argc, char** argv) {
 }
 
 void trd(std::vector<int>& primes, bool& runthread) {
+	long long before = 0;
 	while (runthread) {
-		std::cout << primes.size() << std::endl;
-		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+		std::cout << floor(primes.size() / 1000) / 1000 << "m | " << float(primes.size() - before) / 100 << "k" << std::endl;
+		before = primes.size();
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 }
 
-inline bool fileExists(const std::string& name) {
-	struct stat buffer;
-	return (stat(name.c_str(), &buffer) == 0);
+bool fileExists(const std::string& name) {
+	std::ifstream f(name.c_str());
+	return f.good();
+}
+
+unsigned long long isqrt(unsigned long a) {
+	unsigned long rem = 0;
+	int root = 0;
+	int i;
+
+	for (i = 0; i < 16; i++) {
+		root <<= 1;
+		rem <<= 2;
+		rem += a >> 30;
+		a <<= 2;
+
+		if (root < rem) {
+			root++;
+			rem -= root;
+			root++;
+		}
+	}
+
+	return (unsigned long long)(root >> 1);
 }
