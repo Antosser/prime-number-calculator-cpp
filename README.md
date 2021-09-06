@@ -1,11 +1,10 @@
 # Antosser's really fast "Prime Number Calculator"
 ## Usage
 1. Execute the app with a commandline.
-1. Enter how many primes you want to calculate after **Numbers:**.
-1. Then enter the name of the file where you want to save the output to. If the file already exists it will continue calculating from the place you stopped at.
-1. Press enter and it will be calculating the numbers very fast.
-
-Press **Escape** if you want to pause the calculation and save the result to a file
+2. Enter how many prime numbers you wish to calculate
+3. Enter the name of the file where you want to store the results (It will restore the pervious state if you type in an existing file)
+4. Press enter
+5. Wait for the calculation to end or press **Escape** if you want to stop the calculation and proceed to saving part
 
 ## How it works
 First a std::vector<int> is being created. (That's like an array that has the ability to expand.)
