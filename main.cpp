@@ -9,7 +9,6 @@
 
 void trd(std::vector<int>& primes, bool& runthread);
 bool fileExists(const std::string& name);
-int floorSqrt(int x);
 unsigned long long isqrt(unsigned long a);
 
 int main(int argc, char** argv) {
@@ -45,7 +44,7 @@ int main(int argc, char** argv) {
 	std::cout << "Calculating...\n";
 	bool runthread = true;
 	std::thread t1(trd, std::ref(primes), std::ref(runthread));
-	for (; primes.size() < n; i++) {
+	for (; primes.size() < n; i += 2) {
 		//if (i & 0x100000)
 		//	primes.(0x100000);
 		uint16_t root = 0;
