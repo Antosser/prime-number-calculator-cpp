@@ -7,22 +7,21 @@
 5. Wait for the calculation to end or press **Escape** if you want to stop the calculation and proceed to saving part
 
 ## How it works
-First a std::vector<int> is being created. (That's like an array that has the ability to expand.)
 ```cpp
-std::vector<int> primes = {};
-```
-Then you do that
-```cpp
-for (int i = 2; primes.size() < n; i++) {
+std::vector<int> primes = {}; // Create a vector class
+for (int i = 2; primes.size() < n; i++) { // Loop trough every integer between 2 and n
   int root = sqrt(i) + 1;
-  for (int ci : primes) {
+  for (int ci : primes) { // Loop trough every know prime
     if (i % ci == 0)
-      goto brk;
+      goto brk; // Number is not prime
     if (ci > root)
-      break;
+      break; // Number is prime
   }
   primes.push_back(i);
-  file << i << std::endl;
   brk:;
-} // Try understand it yourself. Not that hard
+}
+
+// Print primes
+for (auto i : primes)
+  std::cout << i << std::endl;
 ```
