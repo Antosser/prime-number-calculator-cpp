@@ -44,7 +44,7 @@ int main(int argc, char** argv) {
 	std::cout << "Calculating...\n";
 	bool runthread = true;
 	std::thread t1(trd, std::ref(primes), std::ref(runthread));
-	for (; primes.size() < n; i += 2) {
+	for (; primes.size() < n; i++) {
 		//if (i & 0x100000)
 		//	primes.(0x100000);
 		uint16_t root = 0;
