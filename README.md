@@ -17,7 +17,7 @@ for (int i = 2; primes.size() < n; i++) { // Loop trough every integer between 2
     if (ci > root)
       break; // Number is prime
   }
-  primes.push_back(i);
+  primes.push_back(i); // Add prime to list
   brk:;
 }
 
