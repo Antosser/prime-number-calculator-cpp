@@ -1,10 +1,19 @@
 # Antosser's really fast "Prime Number Calculator"
 ## Usage
-1. Execute the app with a commandline.
-2. Enter how many prime numbers you wish to calculate
-3. Enter the name of the file where you want to store the results (It will restore the pervious state if you type in an existing file)
-4. Press enter
-5. Wait for the calculation to end or press **Escape** if you want to stop the calculation and proceed to saving part
+1. Execute the app
+1. Enter how many prime numbers you wish to calculate
+1. Enter the name of the file where you want to store the results (It will restore the pervious state if you type in an existing file)
+1. Press enter
+1. Wait for the calculations to end
+----- or ------
+1. Open commandline in the directory containing the executable
+1. Execute the app with the following syntax:
+```batch
+prime <filename> <amount>
+```
+1. Wait for the calculations to end
+
+
 
 ## How it works
 ```cpp
