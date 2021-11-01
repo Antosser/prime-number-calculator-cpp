@@ -1,6 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <string>
 #include <fstream>
 #include <string>
 #include <cmath>
@@ -13,12 +12,21 @@ unsigned long long isqrt(unsigned long a);
 
 int main(int argc, char** argv) {
 	long long int n;
-	std::cout << "Numbers: ";
-	std::cin >> n;
 	std::string ifilename;
-	std::cout << "File: ";
-	std::cin >> ifilename;
-
+	if (argc == 1) {
+		std::cout << "Numbers: ";
+		std::cin >> n;
+		std::cout << "File: ";
+		std::cin >> ifilename;
+	}
+	else if (argc == 3) {
+		ifilename = argv[1];
+		n = atoi(argv[2]);
+	}
+	else {
+		exit(-1);
+	}
+	
 	unsigned long long i = 2;
 	std::vector<int> primes = {};
 	if (fileExists(ifilename)) {
