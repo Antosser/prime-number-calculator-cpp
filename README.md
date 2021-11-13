@@ -5,7 +5,7 @@
 ```prime <filename> <amount> [-log]```
 1. Wait for the calculations to end  
 
-# Logging
+## Logging
 The `-log` parameter saves the progress and speed at any time (basically the console output) to "<filename>.log.csv" so it can be futherly opened in Google Sheets or Exel
 
 ## How it works
