@@ -121,13 +121,13 @@ int main(int argc, char** argv) {
 void trd(std::vector<int>& primes, bool& runthread, bool log, std::string ifilename) {
 	std::ofstream logfile;
 	if (log) {
-		logfile.open(std::string(ifilename) + ".log.csv");
+		logfile.open(std::string(ifilename) + ".log.csv", std::ios::app);
 	}
 	long long before = 0;
 	while (runthread) {
 		std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
-		std::cout << floor(primes.size() / 1000) / 1000 << "m | " << float(primes.size() - before) / 50 << "k" << std::endl;
+		std::cout << floor(primes.size() / 1000) / 1000 << "m | " << float(primes.size() - before) / 200 << "k" << std::endl;
 		if (log) {
 			logfile << primes.size() << "," << float(primes.size() - before) * 20 << std::endl;
 		}
