@@ -51,6 +51,7 @@ int main(int argc, char** argv) {
 
 	std::cout << "Calculating...\n";
 	bool runthread = true;
+	auto starttime = std::chrono::high_resolution_clock::now();
 	std::thread t1(trd, std::ref(primes), std::ref(runthread));
 	for (; primes.size() < n; i++) {
 		//if (i & 0x100000)
@@ -96,7 +97,8 @@ int main(int argc, char** argv) {
 	//for (auto el : primes)
 	//	data += std::to_string(el) + '\n';
 	//
-	std::cout << "Done!\n";
+	auto duration = std::chrono::high_resolution_clock::now() - starttime;
+	std::cout << "Done in " << double(duration.count()) / 1000000000 << "s\n";
 }
 
 void trd(std::vector<int>& primes, bool& runthread) {
