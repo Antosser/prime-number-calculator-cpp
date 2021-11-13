@@ -6,25 +6,42 @@
 #include <thread>
 #include <Windows.h>
 
-void trd(std::vector<int>& primes, bool& runthread);
+void trd(std::vector<int>& primes, bool& runthread, bool log, std::string ifilename);
 bool fileExists(const std::string& name);
 unsigned long long isqrt(unsigned long a);
 
 int main(int argc, char** argv) {
 	long long int n;
 	std::string ifilename;
-	if (argc == 1) {
+	bool log = false;
+
+	bool defn = false;
+	bool defifilename = false;
+
+	for (int i = 1; i < argc; i++) {
+		if (std::string(argv[i]) == "-log")
+			log = true;
+		else if (!defifilename) {
+			ifilename = argv[i];
+			defifilename = true;
+		}
+		else if (!defn) {
+			n = atoi(argv[i]);
+			defn = true;
+		}
+		else {
+			std::cout << "Unexpected argument: " << argv[i] << std::endl;
+			exit(-1);
+		}
+
+	}
+	if (!defn) {
 		std::cout << "Numbers: ";
 		std::cin >> n;
+	}
+	if (!defifilename) {
 		std::cout << "File: ";
 		std::cin >> ifilename;
-	}
-	else if (argc == 3) {
-		ifilename = argv[1];
-		n = atoi(argv[2]);
-	}
-	else {
-		exit(-1);
 	}
 	
 	unsigned long long i = 2;
@@ -43,7 +60,7 @@ int main(int argc, char** argv) {
 					std::cout << total / 0x100000 << "mb\n";
 				primes.push_back(std::stoi(line));
 			}
-			i = primes[primes.size() - 1];
+			i = primes[primes.size() - 1] + 1;
 			ifile.close();
 		}
 		else std::cout << "Unable to open file";
@@ -52,7 +69,7 @@ int main(int argc, char** argv) {
 	std::cout << "Calculating...\n";
 	bool runthread = true;
 	auto starttime = std::chrono::high_resolution_clock::now();
-	std::thread t1(trd, std::ref(primes), std::ref(runthread));
+	std::thread t1(trd, std::ref(primes), std::ref(runthread), log, ifilename);
 	for (; primes.size() < n; i++) {
 		//if (i & 0x100000)
 		//	primes.(0x100000);
@@ -101,12 +118,20 @@ int main(int argc, char** argv) {
 	std::cout << "Done in " << double(duration.count()) / 1000000000 << "s\n";
 }
 
-void trd(std::vector<int>& primes, bool& runthread) {
+void trd(std::vector<int>& primes, bool& runthread, bool log, std::string ifilename) {
+	std::ofstream logfile;
+	if (log) {
+		logfile.open(std::string(ifilename) + ".log.csv");
+	}
 	long long before = 0;
 	while (runthread) {
-		std::cout << floor(primes.size() / 1000) / 1000 << "m | " << float(primes.size() - before) / 100 << "k" << std::endl;
+		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
+		std::cout << floor(primes.size() / 1000) / 1000 << "m | " << float(primes.size() - before) / 50 << "k" << std::endl;
+		if (log) {
+			logfile << primes.size() << "," << float(primes.size() - before) * 20 << std::endl;
+		}
 		before = primes.size();
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 }
 
