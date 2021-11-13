@@ -2,9 +2,7 @@
 ## Usage
 1. Open commandline in the directory containing the executable  
 1. Execute the app with the following syntax:  
-```batch
-prime <filename> <amount> [-log]
-```
+```prime <filename> <amount> [-log]```
 1. Wait for the calculations to end  
 
 # Logging
