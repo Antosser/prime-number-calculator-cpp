@@ -11,7 +11,7 @@ The `-log` parameter saves the progress and speed at any time (basically the con
 ## How it works
 ```cpp
 std::vector<int> primes = {}; // Create a vector class
-for (int i = 2; primes.size() < n; i++) { // Loop trough every integer between 2 and n
+for (int i = 2; primes.size() < n; i++) { // Loop until vector's size is n
   int root = sqrt(i) + 1;
   for (int ci : primes) { // Loop trough every know prime
     if (i % ci == 0)
