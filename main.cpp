@@ -73,9 +73,9 @@ int main(int argc, char** argv) {
 	for (; primes.size() < n; i++) {
 		//if (i & 0x100000)
 		//	primes.(0x100000);
-		uint16_t root = 0;
+		uint32_t root = 0;
 		for (int32_t j = 15; j >= 0; j--) {
-			uint16_t temp = root | (1 << j);
+			uint32_t temp = root | (1 << j);
 			if ((unsigned long)temp * temp <= i) {
 				root = temp;
 			}
