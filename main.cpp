@@ -76,7 +76,7 @@ int main(int argc, char** argv) {
 		uint16_t root = 0;
 		for (int32_t j = 15; j >= 0; j--) {
 			uint16_t temp = root | (1 << j);
-			if (temp * temp <= i) {
+			if ((unsigned long)temp * temp <= i) {
 				root = temp;
 			}
 		}
@@ -124,14 +124,19 @@ void trd(std::vector<int>& primes, bool& runthread, bool log, std::string ifilen
 		logfile.open(std::string(ifilename) + ".log.csv", std::ios::app);
 	}
 	long long before = 0;
+	std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	while (runthread) {
-		std::this_thread::sleep_for(std::chrono::milliseconds(50));
-
-		std::cout << floor(primes.size() / 1000) / 1000 << "m | " << float(primes.size() - before) / 200 << "k" << std::endl;
+		std::cout << floor(primes.size() / 1000) / 1000 << "m | " << float(primes.size() - before) / 50 << "k" << std::endl;
 		if (log) {
 			logfile << primes.size() << "," << float(primes.size() - before) * 20 << std::endl;
 		}
 		before = primes.size();
+	
+		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+	}
+	std::cout << floor(primes.size() / 1000) / 1000 << "m | " << float(primes.size() - before) / 50 << "k" << std::endl;
+	if (log) {
+		logfile << primes.size() << "," << float(primes.size() - before) * 20 << std::endl;
 	}
 }
 
@@ -140,7 +145,7 @@ bool fileExists(const std::string& name) {
 	return f.good();
 }
 
-unsigned long long isqrt(unsigned long a) {
+/*unsigned long long isqrt(unsigned long a) {
 	unsigned long rem = 0;
 	int root = 0;
 	int i;
@@ -159,4 +164,4 @@ unsigned long long isqrt(unsigned long a) {
 	}
 
 	return (unsigned long long)(root >> 1);
-}
+}*/
