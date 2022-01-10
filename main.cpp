@@ -7,7 +7,7 @@
 #include <Windows.h>
 
 void trd(std::vector<int>& primes, bool& runthread, bool log, std::string ifilename);
-bool fileExists(const std::string& name);
+inline bool fileExists(const std::string& name);
 
 int main(int argc, char** argv) {
 	long long int n;
@@ -139,7 +139,7 @@ void trd(std::vector<int>& primes, bool& runthread, bool log, std::string ifilen
 	}
 }
 
-bool fileExists(const std::string& name) {
+inline bool fileExists(const std::string& name) {
 	std::ifstream f(name.c_str());
 	return f.good();
 }
