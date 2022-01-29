@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
 		}
 		else {
 			std::cout << "Unexpected argument: " << argv[i] << std::endl;
-			exit(-1);
+			exit(1);
 		}
 
 	}
