@@ -40,9 +40,14 @@ int main(int argc, char** argv) {
 			binout = true;
 			decout = true;
 		}
-		else if (argstring == "-convert") {
-			binin = true;
+		else if (argstring == "-tobin") {
+			binin = false;
 			binout = true;
+			convert = true;
+		}
+		else if (argstring == "-todec") {
+			binin = true;
+			binout = false;
 			convert = true;
 		}
 		else if (!defifilename) {
@@ -105,14 +110,7 @@ int main(int argc, char** argv) {
 				char* read = new char[8];
 				readOperation operation = readOperation::read_zero_count;
 
-				int count_debug = 0;
-				int bytes_debug = 0;
-				int last_readbytes_debug = 999;
-
 				while (ifile.read(read, readbytes)) {
-					count_debug++;
-					bytes_debug += readbytes;
-
 					if (operation == readOperation::read_zero_count) {
 						length = *read;
 						operation = readOperation::read_number;
@@ -127,8 +125,6 @@ int main(int argc, char** argv) {
 						readbytes = 1;
 						primes.push_back(number);
 					}
-
-					last_readbytes_debug = readbytes;
 				}
 
 				i = primes[primes.size() - 1] + 1;
@@ -143,11 +139,12 @@ int main(int argc, char** argv) {
 		std::cout << "Calculating...\n";
 	bool runthread = true;
 	auto starttime = std::chrono::high_resolution_clock::now();
+	std::thread* t1;
 	if (!convert) {
-		std::thread t1(trd, std::ref(primes), std::ref(runthread), log, std::ref(ifilename));
+		t1 = new std::thread(trd, std::ref(primes), std::ref(runthread), log, std::ref(ifilename));
 
 		for (; primes.size() < n; i++) {
-			uint32_t root = fast_sqrt(i);
+			uint64_t root = fast_sqrt(i);
 			for (uint64_t ci : primes) {
 				if (i % ci == 0)
 					goto brk;
@@ -159,8 +156,9 @@ int main(int argc, char** argv) {
 		}
 	}
 	runthread = false;
+	//logval(decout);
 	if (decout) {
-		std::cout << "Writing decemal...\n";
+		std::cout << "Writing decimal...\n";
 		{
 			std::ofstream file(ifilename);
 			std::string data;
@@ -211,9 +209,9 @@ void trd(const std::vector<uint64_t>& primes, bool& runthread, bool log, const s
 	long long before = 0;
 	std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	while (runthread) {
-		std::cout << floor(primes.size() / 1000) / 1000 << "m | " << float(primes.size() - before) / 50 << "k" << std::endl;
+		std::cout << floor(primes.size() / 1000) / 1000 << "m | " << float(primes.size() - before) / 50 << "k" << '\n';
 		if (log) {
-			logfile << primes.size() << "," << float(primes.size() - before) * 20 << std::endl;
+			logfile << primes.size() << "," << float(primes.size() - before) * 20 << '\n';
 		}
 		before = primes.size();
 	
