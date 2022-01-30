@@ -6,7 +6,7 @@
 1. Wait for the calculations to end  
 
 ## Parameters
-* `-log` - Saves the progress and speed at any time (basically the console output) to "<filename>.log.csv" so it can be futherly opened in Google Sheets or Exel
+* `-log` - Saves the progress and speed at any time (basically the console output) to "<filename>.log.csv" so it can be futherly opened in Google Sheets or Ms Exel
 * `-binin` - Takes a compressed binary file as input (`{filename}.prime`)
 * `-binout` - Outputs binary compressed file instead of decimal (`{filename}.prime`)
 * `-allout` - Outputs both the compressed binary file and the decimal file
