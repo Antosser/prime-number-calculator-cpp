@@ -4,6 +4,7 @@
 #include <string>
 #include <cmath>
 #include <thread>
+#include <Windows.h>
 
 #define logval(varname) std::cout << #varname": " << varname << "\n"
 
@@ -49,6 +50,10 @@ int main(int argc, char** argv) {
 			binin = true;
 			binout = false;
 			convert = true;
+		}
+		else if (argstring == "-help" || argstring == "--help" || argstring == "--?" || argstring == "-?" || argstring == "/?" || argstring == "/help") {
+			ShellExecute(NULL, NULL, L"https://github.com/Antosser/prime-number-calculator#readme", NULL, NULL, SW_SHOWNORMAL);
+			exit(0);
 		}
 		else if (!defifilename) {
 			ifilename = argv[i];
