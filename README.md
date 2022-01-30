@@ -2,11 +2,16 @@
 ## Usage
 1. Open commandline in the directory containing the executable  
 1. Execute the app with the following syntax:  
-```prime <filename> <amount> [-log]```
+```prime <filename> (<amount> [-log] [-binin] [-binout] [-allout]) || <-todec> || <-tobin>```
 1. Wait for the calculations to end  
 
-## Logging
-The `-log` parameter saves the progress and speed at any time (basically the console output) to "<filename>.log.csv" so it can be futherly opened in Google Sheets or Exel
+## Parameters
+* `-log` - Saves the progress and speed at any time (basically the console output) to "<filename>.log.csv" so it can be futherly opened in Google Sheets or Exel
+* `-binin` - Takes a compressed binary file as input (`{filename}.prime`)
+* `-binout` - Outputs binary compressed file instead of decimal (`{filename}.prime`)
+* `-allout` - Outputs both the compressed binary file and the decimal file
+* `-tobin` - Converts the decimal file to compressed binary
+* `-todec` - Converts the binary file to compressed decimal
 
 ## How it works
 ```cpp
