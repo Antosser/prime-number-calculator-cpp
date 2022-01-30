@@ -4,11 +4,14 @@
 #include <string>
 #include <cmath>
 #include <thread>
-#include <Windows.h>
+
+#define logval(varname) std::cout << #varname": " << varname << "\n"
 
 void trd(const std::vector<uint64_t>& primes, bool& runthread, bool log, const std::string& ifilename);
 inline bool fileExists(const std::string& name);
 inline uint64_t fast_sqrt(uint64_t num);
+
+enum class readOperation {read_zero_count, read_number};
 
 int main(int argc, char** argv) {
 	uint64_t n;
@@ -17,6 +20,7 @@ int main(int argc, char** argv) {
 	bool binin = false;
 	bool binout = false;
 	bool decout = true;
+	bool convert = false;
 
 	bool defn = false;
 	bool defifilename = false;
@@ -36,6 +40,11 @@ int main(int argc, char** argv) {
 			binout = true;
 			decout = true;
 		}
+		else if (argstring == "-convert") {
+			binin = true;
+			binout = true;
+			convert = true;
+		}
 		else if (!defifilename) {
 			ifilename = argv[i];
 			defifilename = true;
@@ -50,7 +59,7 @@ int main(int argc, char** argv) {
 		}
 
 	}
-	if (!defn) {
+	if (!defn && !convert) {
 		std::cout << "Numbers: ";
 		std::cin >> n;
 	}
@@ -63,7 +72,7 @@ int main(int argc, char** argv) {
 	std::vector<uint64_t> primes = {};
 	if (!binin) {
 		if (fileExists(ifilename)) {
-			std::cout << "Restoring vector...\n";
+			std::cout << "Restoring vector from decimal...\n";
 			std::ifstream ifile(ifilename);
 			if (ifile.is_open()) {
 				std::string line;
@@ -79,43 +88,75 @@ int main(int argc, char** argv) {
 				i = primes[primes.size() - 1] + 1;
 				ifile.close();
 			}
-			else std::cout << "Unable to open file";
+			else {
+				std::cout << "Unable to open file";
+				exit(1);
+			}
 		}
 	}
 	else {
 		if (fileExists(ifilename + ".prime")) {
-			std::cout << "Restoring vector...\n";
-			std::ifstream ifile(ifilename + ".prime");
+			std::cout << "Restoring vector from binary...\n";
+			std::ifstream ifile(ifilename + ".prime", std::ios::binary);
 			if (ifile.is_open()) {
-				uint64_t count = 0;
 				uint64_t number = 0;
+				int readbytes = 1;
+				int length = 0;
+				char* read = new char[8];
+				readOperation operation = readOperation::read_zero_count;
 
-				while (ifile.read((char*)&number, 8)) {
-					primes.push_back(number);
+				int count_debug = 0;
+				int bytes_debug = 0;
+				int last_readbytes_debug = 999;
 
-					count++;
+				while (ifile.read(read, readbytes)) {
+					count_debug++;
+					bytes_debug += readbytes;
+
+					if (operation == readOperation::read_zero_count) {
+						length = *read;
+						operation = readOperation::read_number;
+						readbytes = length;
+						delete[8] read;
+						read = new char[8];
+						memset(read, 0x00, 8);
+					}
+					else if (operation == readOperation::read_number) {
+						number = *((uint64_t*)read);
+						operation = readOperation::read_zero_count;
+						readbytes = 1;
+						primes.push_back(number);
+					}
+
+					last_readbytes_debug = readbytes;
 				}
 
 				i = primes[primes.size() - 1] + 1;
 			}
-			else std::cout << "Unable to open file";
+			else {
+				std::cout << "Unable to open file";
+				exit(1);
+			}
 		}
 	}
-
-	std::cout << "Calculating...\n";
+	if (!convert)
+		std::cout << "Calculating...\n";
 	bool runthread = true;
 	auto starttime = std::chrono::high_resolution_clock::now();
-	std::thread t1(trd, std::ref(primes), std::ref(runthread), log, std::ref(ifilename));
-	for (; primes.size() < n; i++) {
-		uint32_t root = fast_sqrt(i);
-		for (uint64_t ci : primes) {
-			if (i % ci == 0)
-				goto brk;
-			if (ci > root)
-				break;
-		}
-		primes.push_back(i);
+	if (!convert) {
+		std::thread t1(trd, std::ref(primes), std::ref(runthread), log, std::ref(ifilename));
+
+		for (; primes.size() < n; i++) {
+			uint32_t root = fast_sqrt(i);
+			for (uint64_t ci : primes) {
+				if (i % ci == 0)
+					goto brk;
+				if (ci > root)
+					break;
+			}
+			primes.push_back(i);
 		brk:;
+		}
 	}
 	runthread = false;
 	if (decout) {
@@ -141,17 +182,23 @@ int main(int argc, char** argv) {
 	if (binout) {
 		std::cout << "Writing binary...\n";
 		{
-			std::ofstream file(ifilename + ".prime");
+			std::ofstream file(ifilename + ".prime", std::ios::binary);
 
-			file.write((const char*)primes.data(), primes.size() * 8);
+			for (uint64_t j : primes) {
+				int length = 8;
+				const char* jchar = (const char*)&j;
+				for (int i = 7; i >= 0; i--) {
+					if (jchar[i] == 0) length--;
+					else break;
+				}
+
+				file.write((char*)&length, 1);
+				file.write((char*)&j, length);
+			}
 
 			file.close();
 		}
 	}
-	//
-	//for (auto el : primes)
-	//	data += std::to_string(el) + '\n';
-	//
 	auto duration = std::chrono::high_resolution_clock::now() - starttime;
 	std::cout << "Done in " << double(duration.count()) / 1000000000 << "s\n";
 }
@@ -172,10 +219,6 @@ void trd(const std::vector<uint64_t>& primes, bool& runthread, bool log, const s
 	
 		std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	}
-	std::cout << floor(primes.size() / 1000) / 1000 << "m | " << float(primes.size() - before) / 50 << "k" << std::endl;
-	if (log) {
-		logfile << primes.size() << "," << float(primes.size() - before) * 20 << std::endl;
-	}
 }
 
 inline bool fileExists(const std::string& name) {
@@ -187,7 +230,7 @@ inline uint64_t fast_sqrt(uint64_t num) {
 	uint64_t root = 0;
 
 	for (int32_t i = 15; i >= 0; i--) {
-		uint64_t temp = root | (1 << i);
+		uint64_t temp = root | ((uint64_t)1 << i);
 		if (temp * temp <= num) {
 			root = temp;
 		}
