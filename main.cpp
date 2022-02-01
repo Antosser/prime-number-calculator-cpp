@@ -44,11 +44,13 @@ int main(int argc, char** argv) {
 		else if (argstring == "-tobin") {
 			binin = false;
 			binout = true;
+			decout = false;
 			convert = true;
 		}
 		else if (argstring == "-todec") {
 			binin = true;
 			binout = false;
+			decout = true;
 			convert = true;
 		}
 		else if (argstring == "-help" || argstring == "--help" || argstring == "--?" || argstring == "-?" || argstring == "/?" || argstring == "/help") {
@@ -92,7 +94,7 @@ int main(int argc, char** argv) {
 					++j;
 					total += line.length() + 1;
 					if (!(j & 0xfffff))
-						std::cout << total / 0x100000 << "mb\n";
+						std::cout << primes.size() / 1000000 << "m\n";
 					primes.push_back(std::stoi(line));
 				}
 				i = primes[primes.size() - 1] + 1;
