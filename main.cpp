@@ -133,21 +133,19 @@ int main(int argc, char** argv) {
 				// Same
 				int length = 0;
 				// Buffer
-				char* read = new char[8];
+				char* buffer = new char[8];
 				// State: read_zero_count OR read_number
 				readOperation operation = readOperation::read_zero_count;
 
 				// Cycle trough file
-				while (ifile.read(read, readbytes)) {
+				while (ifile.read(buffer, readbytes)) {
 					if (operation == readOperation::read_zero_count) {
-						length = *read;
+						length = *buffer;
 						// Switch operation
 						operation = readOperation::read_number;
 						readbytes = length;
 						// Clear read
-						delete[8] read;
-						read = new char[8];
-						memset(read, 0x00, 8);
+						memset(buffer, 0x00, 8);
 					}
 					else if (operation == readOperation::read_number) {
 						// Cast read (char*) to number (uint64_t)
