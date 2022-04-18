@@ -4,7 +4,6 @@
 #include <string>
 #include <cmath>
 #include <thread>
-#include <Windows.h>
 
 // Macro for quick debugging
 #define logval(varname) std::cout << #varname": " << varname << "\n"
