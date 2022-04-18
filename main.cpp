@@ -135,23 +135,23 @@ int main(int argc, char** argv) {
 				// Buffer
 				char* buffer = new char[8];
 				// State: read_zero_count OR read_number
-				readOperation operation = readOperation::read_zero_count;
+				readOperation readOperation = readOperation::read_zero_count;
 
 				// Cycle trough file
 				while (ifile.read(buffer, readbytes)) {
-					if (operation == readOperation::read_zero_count) {
+					if (readOperation == readOperation::read_zero_count) {
 						length = *buffer;
 						// Switch operation
-						operation = readOperation::read_number;
+						readOperation = readOperation::read_number;
 						readbytes = length;
 						// Clear read
 						memset(buffer, 0x00, 8);
 					}
-					else if (operation == readOperation::read_number) {
+					else if (readOperation == readOperation::read_number) {
 						// Cast read (char*) to number (uint64_t)
 						number = *((uint64_t*)read);
 						// Switch operation
-						operation = readOperation::read_zero_count;
+						readOperation = readOperation::read_zero_count;
 						readbytes = 1;
 						// Add number to list
 						primes.push_back(number);
