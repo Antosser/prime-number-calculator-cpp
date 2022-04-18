@@ -32,34 +32,33 @@ int main(int argc, char** argv) {
 
 	// Parse arguments
 	for (uint64_t i = 1; i < argc; i++) {
-		std::string argstring = argv[i];
-		if (std::string(argstring) == "-log")
+		if (strcmp(argv[i], "-log") == 0)
 			log = true;
-		else if (argstring == "-binin") {
+		else if (strcmp(argv[i], "-binin")) {
 			binin = true;
 		}
-		else if (argstring == "-binout") {
+		else if (strcmp(argv[i], "-binout")) {
 			binout = true;
 			decout = false;
 		}
-		else if (argstring == "-allout") {
+		else if (strcmp(argv[i], "-allout")) {
 			binout = true;
 			decout = true;
 		}
-		else if (argstring == "-tobin") {
+		else if (strcmp(argv[i], "-tobin")) {
 			binin = false;
 			binout = true;
 			decout = false;
 			convert = true;
 		}
-		else if (argstring == "-todec") {
+		else if (strcmp(argv[i], "-todec")) {
 			binin = true;
 			binout = false;
 			decout = true;
 			convert = true;
 		}
-		else if (argstring == "-help" || argstring == "--help" || argstring == "--?" || argstring == "-?" || argstring == "/?" || argstring == "/help") {
-			ShellExecute(NULL, NULL, L"https://github.com/Antosser/prime-number-calculator#readme", NULL, NULL, SW_SHOWNORMAL);
+		else if (strcmp(argv[i], "-help") || strcmp(argv[i], "--help") || strcmp(argv[i], "--?") || strcmp(argv[i], "-?") || strcmp(argv[i], "/?") || strcmp(argv[i], "/help")) {
+			std::cout << "Follow this link for help: https://github.com/Antosser/prime-number-calculator#readme\n";
 			exit(0);
 		}
 		else if (!defifilename) {
