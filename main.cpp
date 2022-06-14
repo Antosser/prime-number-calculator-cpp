@@ -148,8 +148,8 @@ int main(int argc, char** argv) {
 						memset(buffer, 0x00, 8);
 					}
 					else if (readOperation == readOperation::read_number) {
-						// Cast read (char*) to number (uint64_t)
-						number = *((uint64_t*)read);
+						// Cast buffer (char*) to number (uint64_t)
+						number = *((uint64_t*)buffer);
 						// Switch operation
 						readOperation = readOperation::read_zero_count;
 						readbytes = 1;
